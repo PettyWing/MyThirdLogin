@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.xieyucheng.mythirdlogin">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.READ_LOG"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:noHistory="true"
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="1105114651" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!--wechat-->
+        <activity
+            android:name="com.example.xieyucheng.mythirdlogin.wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="sdksample" />
+            </intent-filter>
+        </activity>
+
+        <!-- meta-data 是第三方应用程序DEMO必须加在application里的规则属性 ：appid_with_aoe的值是移动提供的appid -->
+        <meta-data
+            android:name="appid_with_aoe_push"
+            android:value="appid(108500866903)" />
+        <meta-data
+            android:name="aoe_push_channel"
+            android:value="DEFAULT" />
+
+        <!-- receiver 暂时代表第三方应用程序DEMO做测试用，以后的版本需要将其单独写到第三方APP,此包名为com.aoe.appDemo -->
+        <receiver android:name="com.example.xieyucheng.mythirdlogin.AoiReceiver">
+            <intent-filter>
+                <action android:name="com.aoe.action.WAKEUP_APP_REBIND" />
+            </intent-filter>
+        </receiver>
+
+        <!-- service 是第三方应用程序必须声明的中间件后台服务 -->
+        <service
+            android:name="com.cmcc.aoe.push.AOEService"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:persistent="true"
+            android:process="com.cmcc.aoe.push.AOEService" >
+            <intent-filter android:priority="1000" >
+                <action android:name="com.cmcc.aoe.push.Register" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!-- meta-data 是第三方应用程序必须加在service里的规则属性 ：service_version的值是AOE中间件的版本号 -->
+            <meta-data
+                android:name="service_version"
+                android:value="2.3" />
+        </service>
+
+        <receiver
+            android:name="com.cmcc.aoe.push.AOEMessageBroadcastReceiver"
+            android:process=":remote" >
+
+            <!-- 消息点击拦截Receiver -->
+            <intent-filter android:priority="3" >
+                <action android:name="com.aoe.action.MESSAGE_RECEIVED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.cmcc.aoe.push.AOEBootCompletedReceiver"
+            android:process=":remote" >
+
+            <!-- 系统启动消息拦截Receiver -->
+            <intent-filter android:priority="3" >
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.cmcc.aoe.push.AOEBroadcastReceiver"
+            android:process=":remote" >
+
+            <!-- 网络切换消息拦截Receiver -->
+            <intent-filter android:priority="3" >
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+            <!-- Push数据短信拦截Receiver -->
+            <intent-filter android:priority="1000" >
+                <action android:name="android.intent.action.DATA_SMS_RECEIVED" />
+
+                <data
+                    android:host="localhost"
+                    android:port="16860"
+                    android:scheme="sms" />
+            </intent-filter>
+            <!-- 应用安装消息拦截Receiver -->
+            <intent-filter android:priority="3" >
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+            <!-- 应用卸载消息拦截Receiver -->
+            <intent-filter android:priority="3" >
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+            <intent-filter android:priority="3" >
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+            </intent-filter>
+            <intent-filter android:priority="0x7fffffff" >
+                <action android:name="android.intent.action.MEDIA_UNMOUNTED" />
+                <action android:name="android.intent.action.MEDIA_REMOVED" />
+                <action android:name="android.intent.action.MEDIA_CHECKING" />
+                <action android:name="android.intent.action.MEDIA_EJECT" />
+
+                <data android:scheme="file" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>
